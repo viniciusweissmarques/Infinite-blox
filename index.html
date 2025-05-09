@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formatador de Textos - Sua Loja</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #6a3093 0%, #2b0a3d 100%);
+            margin: 0;
+            padding: 20px;
+            color: #f0f0f0;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background-color: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .logo {
+            display: block;
+            margin: 0 auto 20px;
+            max-width: 200px;
+            height: auto;
+            filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.3));
+            transition: transform 0.3s;
+        }
+        
+        .logo:hover {
+            transform: scale(1.05);
+        }
+        
+        h1 {
+            text-align: center;
+            color: #fff;
+            margin-bottom: 25px;
+            text-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+            font-size: 28px;
+        }
+        
+        textarea {
+            width: 100%;
+            height: 200px;
+            padding: 15px;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            background-color: rgba(0, 0, 0, 0.3);
+            color: #fff;
+            font-size: 16px;
+            resize: vertical;
+            margin-bottom: 20px;
+            transition: all 0.3s;
+        }
+        
+        textarea:focus {
+            outline: none;
+            border-color: #9c4dff;
+            box-shadow: 0 0 0 2px rgba(156, 77, 255, 0.3);
+        }
+        
+        .buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        button {
+            background: linear-gradient(135deg, #9c4dff 0%, #6a3093 100%);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 15px rgba(156, 77, 255, 0.3);
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(156, 77, 255, 0.4);
+        }
+        
+        button:active {
+            transform: translateY(0);
+        }
+        
+        .result {
+            background-color: rgba(0, 0, 0, 0.3);
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+            white-space: pre-wrap;
+            font-family: monospace;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        
+        .result-title {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+        
+        .copy-btn {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 10px;
+            font-size: 12px;
+            border-radius: 5px;
+        }
+        
+        .sheet-btn {
+            background: linear-gradient(135deg, #4d94ff 0%, #003366 100%);
+        }
+        
+        /* Planilha styles */
+        #sheet-container {
+            display: none;
+            margin-top: 30px;
+        }
+        
+        #sheet-content {
+            width: 100%;
+            height: 400px;
+            padding: 15px;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            background-color: rgba(0, 0, 0, 0.3);
+            color: #fff;
+            font-size: 16px;
+            resize: none;
+        }
+        
+        .back-btn {
+            background: linear-gradient(135deg, #ff6b4d 0%, #993300 100%);
+            margin-top: 15px;
+        }
+        
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.5s ease-out;
+        }
+        
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: rgba(156, 77, 255, 0.5);
+            border-radius: 10px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(156, 77, 255, 0.7);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <img src="https://i.imgur.com/uhdc0XA.png" alt="Logo da Loja" class="logo">
+        <h1>🔍 Formatador de Textos 🔍</h1>
+        
+        <div id="main-content">
+            <textarea id="input-text" placeholder="Cole aqui o texto que você recebeu do fornecedor... ✍️"></textarea>
+            
+            <div class="buttons">
+                <button id="extract-btn" title="Extrair nomes e senhas">🔑 Extrair Dados</button>
+                <button id="clear-btn" title="Limpar tudo">🧹 Limpar</button>
+                <button id="sheet-btn" class="sheet-btn" title="Abrir planilha de anotações">📊 Planilha</button>
+            </div>
+            
+            <div id="result-container" style="display: none;">
+                <div class="result-title">
+                    <h2>📝 Resultados Extraídos</h2>
+                    <button id="copy-btn" class="copy-btn">📋 Copiar</button>
+                </div>
+                <div id="result" class="result"></div>
+            </div>
+        </div>
+        
+        <div id="sheet-container">
+            <h2>📊 Planilha de Anotações</h2>
+            <textarea id="sheet-content" placeholder="Digite suas anotações aqui... Elas serão salvas automaticamente! 📝"></textarea>
+            <div class="buttons">
+                <button id="back-btn" class="back-btn">⬅️ Voltar</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const inputText = document.getElementById('input-text');
+            const extractBtn = document.getElementById('extract-btn');
+            const clearBtn = document.getElementById('clear-btn');
+            const resultContainer = document.getElementById('result-container');
+            const result = document.getElementById('result');
+            const copyBtn = document.getElementById('copy-btn');
+            const sheetBtn = document.getElementById('sheet-btn');
+            const sheetContainer = document.getElementById('sheet-container');
+            const sheetContent = document.getElementById('sheet-content');
+            const backBtn = document.getElementById('back-btn');
+            const mainContent = document.getElementById('main-content');
+            
+            // Carregar anotações salvas
+            if (localStorage.getItem('sheetNotes')) {
+                sheetContent.value = localStorage.getItem('sheetNotes');
+            }
+            
+            // Extrair dados
+            extractBtn.addEventListener('click', function() {
+                const text = inputText.value.trim();
+                if (!text) {
+                    alert('Por favor, cole o texto para extrair os dados!');
+                    return;
+                }
+                
+                // Extrair nomes e senhas usando regex
+                const regex = /^([^:]+):([^:]+):/gm;
+                let matches;
+                let extractedData = '';
+                
+                while ((matches = regex.exec(text)) !== null) {
+                    const nome = matches[1];
+                    const senha = matches[2];
+                    extractedData += `nome:${nome} senha:${senha}\n`;
+                }
+                
+                if (extractedData) {
+                    result.textContent = extractedData;
+                    resultContainer.style.display = 'block';
+                    resultContainer.classList.add('fade-in');
+                } else {
+                    result.textContent = 'Nenhum nome e senha encontrados no formato esperado.';
+                    resultContainer.style.display = 'block';
+                    resultContainer.classList.add('fade-in');
+                }
+            });
+            
+            // Copiar resultados
+            copyBtn.addEventListener('click', function() {
+                navigator.clipboard.writeText(result.textContent)
+                    .then(() => {
+                        const originalText = copyBtn.textContent;
+                        copyBtn.textContent = '✅ Copiado!';
+                        setTimeout(() => {
+                            copyBtn.textContent = originalText;
+                        }, 2000);
+                    })
+                    .catch(err => {
+                        console.error('Erro ao copiar: ', err);
+                    });
+            });
+            
+            // Limpar tudo
+            clearBtn.addEventListener('click', function() {
+                inputText.value = '';
+                result.textContent = '';
+                resultContainer.style.display = 'none';
+            });
+            
+            // Alternar para planilha
+            sheetBtn.addEventListener('click', function() {
+                mainContent.style.display = 'none';
+                sheetContainer.style.display = 'block';
+                sheetContainer.classList.add('fade-in');
+            });
+            
+            // Voltar da planilha
+            backBtn.addEventListener('click', function() {
+                sheetContainer.style.display = 'none';
+                mainContent.style.display = 'block';
+                mainContent.classList.add('fade-in');
+            });
+            
+            // Salvar anotações automaticamente
+            sheetContent.addEventListener('input', function() {
+                localStorage.setItem('sheetNotes', sheetContent.value);
+            });
+        });
+    </script>
+</body>
+</html>
